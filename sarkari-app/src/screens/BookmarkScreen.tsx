@@ -4,9 +4,7 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  StatusBar,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -27,8 +25,7 @@ const BookmarkScreen: React.FC<Props> = ({ navigation }) => {
   const bookmarkedSchemes = schemes.filter(s => bookmarks.includes(s.id));
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top']}>
-      <StatusBar backgroundColor="#F8FAFF" barStyle="dark-content" />
+    <>
       <View style={styles.header}>
         <Text style={styles.title}>Saved Schemes</Text>
         <Text style={styles.subtitle}>
@@ -57,7 +54,7 @@ const BookmarkScreen: React.FC<Props> = ({ navigation }) => {
           />
         )}
       />
-    </SafeAreaView>
+    </>
   );
 };
 

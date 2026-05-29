@@ -6,7 +6,6 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
-  StatusBar,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -55,155 +54,152 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     navigation.navigate('CategorySchemes', { categoryId, categoryName });
   };
 
+
   return (
-    <SafeAreaView style={styles.safe} edges={['top']}>
-      <StatusBar backgroundColor="#F8FAFF" barStyle="dark-content" />
-      <ScrollView
-        style={styles.container}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      showsVerticalScrollIndicator={false}>
 
-        {/* Header */}
-        <View style={styles.header}>
-          <View>
-            <Text style={styles.greeting}>Namaste! 🙏</Text>
-            <Text style={styles.heading}>Find Your{'\n'}Right Scheme</Text>
-          </View>
-          <TouchableOpacity style={styles.notifBtn}>
-            <Icon name="notifications-none" size={24} color={COLORS.text.primary} />
-            <View style={styles.notifDot} />
-          </TouchableOpacity>
+      {/* Header */}
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.greeting}>Namaste! 🙏</Text>
+          <Text style={styles.heading}>Find Your{'\n'}Right Scheme</Text>
         </View>
+        <TouchableOpacity style={styles.notifBtn}>
+          <Icon name="notifications-none" size={24} color={COLORS.text.primary} />
+          <View style={styles.notifDot} />
+        </TouchableOpacity>
+      </View>
 
-        {/* Search */}
-        <SearchBar
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          onClear={() => setSearchQuery('')}
-        />
+      {/* Search */}
+      <SearchBar
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        onClear={() => setSearchQuery('')}
+      />
 
-        {/* Search Results */}
-        {searchQuery.trim().length > 0 ? (
-          <View style={styles.searchResults}>
-            <Text style={styles.searchResultsTitle}>
-              {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} for "{searchQuery}"
-            </Text>
-            {searchResults.length === 0 ? (
-              <EmptyState
-                icon="search-off"
-                title="No schemes found"
-                subtitle="Try different keywords or browse by category"
+      {/* Search Results */}
+      {searchQuery.trim().length > 0 ? (
+        <View style={styles.searchResults}>
+          <Text style={styles.searchResultsTitle}>
+            {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} for "{searchQuery}"
+          </Text>
+          {searchResults.length === 0 ? (
+            <EmptyState
+              icon="search-off"
+              title="No schemes found"
+              subtitle="Try different keywords or browse by category"
+            />
+          ) : (
+            searchResults.map(scheme => (
+              <SchemeCard
+                key={scheme.id}
+                scheme={scheme}
+                onPress={handleSchemePress}
+                isBookmarked={isBookmarked(scheme.id)}
+                onToggleBookmark={toggleBookmark}
               />
-            ) : (
-              searchResults.map(scheme => (
-                <SchemeCard
-                  key={scheme.id}
-                  scheme={scheme}
-                  onPress={handleSchemePress}
-                  isBookmarked={isBookmarked(scheme.id)}
-                  onToggleBookmark={toggleBookmark}
-                />
-              ))
-            )}
+            ))
+          )}
+        </View>
+      ) : (
+        <>
+          {/* Disclaimer */}
+          <View style={styles.section}>
+            <DisclaimerBanner />
           </View>
-        ) : (
-          <>
-            {/* Disclaimer */}
-            <View style={styles.section}>
-              <DisclaimerBanner />
-            </View>
 
-            {/* Stats Banner */}
-            <View style={styles.statsBanner}>
-              <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{schemes.length}+</Text>
-                <Text style={styles.statLabel}>Schemes</Text>
-              </View>
-              <View style={styles.statDivider} />
-              <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{categories.length}</Text>
-                <Text style={styles.statLabel}>Categories</Text>
-              </View>
-              <View style={styles.statDivider} />
-              <View style={styles.statItem}>
-                <Text style={styles.statNumber}>Free</Text>
-                <Text style={styles.statLabel}>Access</Text>
-              </View>
+          {/* Stats Banner */}
+          <View style={styles.statsBanner}>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{schemes.length}+</Text>
+              <Text style={styles.statLabel}>Schemes</Text>
             </View>
-
-            {/* Categories */}
-            <View style={styles.section}>
-              <SectionHeader
-                title="Categories"
-                onSeeAll={() => {}}
-              />
-              <View style={styles.categoriesGrid}>
-                {categories.map((cat, index) => (
-                  <View key={cat.id} style={styles.categoryItem}>
-                    <CategoryCard
-                      category={cat}
-                      onPress={handleCategoryPress}
-                    />
-                  </View>
-                ))}
-              </View>
+            <View style={styles.statDivider} />
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{categories.length}</Text>
+              <Text style={styles.statLabel}>Categories</Text>
             </View>
+            <View style={styles.statDivider} />
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>Free</Text>
+              <Text style={styles.statLabel}>Access</Text>
+            </View>
+          </View>
 
-            {/* Featured Schemes */}
-            <View style={styles.section}>
-              <SectionHeader
-                title="Featured Schemes"
-                onSeeAll={() => navigation.navigate('CategorySchemes', { categoryId: '', categoryName: 'All' })}
-              />
-              <FlatList
-                data={featuredSchemes}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={item => item.id}
-                renderItem={({ item }) => (
-                  <SchemeCard
-                    scheme={item}
-                    onPress={handleSchemePress}
-                    isBookmarked={isBookmarked(item.id)}
-                    onToggleBookmark={toggleBookmark}
-                    compact
+          {/* Categories */}
+          <View style={styles.section}>
+            <SectionHeader
+              title="Categories"
+              onSeeAll={() => { }}
+            />
+            <View style={styles.categoriesGrid}>
+              {categories.map((cat, index) => (
+                <View key={cat.id} style={styles.categoryItem}>
+                  <CategoryCard
+                    category={cat}
+                    onPress={handleCategoryPress}
                   />
-                )}
-                contentContainerStyle={styles.horizontalList}
+                </View>
+              ))}
+            </View>
+          </View>
+
+          {/* Featured Schemes */}
+          <View style={styles.section}>
+            <SectionHeader
+              title="Featured Schemes"
+              onSeeAll={() => navigation.navigate('CategorySchemes', { categoryId: '', categoryName: 'All' })}
+            />
+            <FlatList
+              data={featuredSchemes}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              keyExtractor={item => item.id}
+              renderItem={({ item }) => (
+                <SchemeCard
+                  scheme={item}
+                  onPress={handleSchemePress}
+                  isBookmarked={isBookmarked(item.id)}
+                  onToggleBookmark={toggleBookmark}
+                  compact
+                />
+              )}
+              contentContainerStyle={styles.horizontalList}
+            />
+          </View>
+
+          {/* Trending */}
+          <View style={styles.section}>
+            <SectionHeader title="🔥 Trending Now" />
+            {trendingSchemes.slice(0, 3).map(scheme => (
+              <SchemeCard
+                key={scheme.id}
+                scheme={scheme}
+                onPress={handleSchemePress}
+                isBookmarked={isBookmarked(scheme.id)}
+                onToggleBookmark={toggleBookmark}
               />
-            </View>
+            ))}
+          </View>
 
-            {/* Trending */}
-            <View style={styles.section}>
-              <SectionHeader title="🔥 Trending Now" />
-              {trendingSchemes.slice(0, 3).map(scheme => (
-                <SchemeCard
-                  key={scheme.id}
-                  scheme={scheme}
-                  onPress={handleSchemePress}
-                  isBookmarked={isBookmarked(scheme.id)}
-                  onToggleBookmark={toggleBookmark}
-                />
-              ))}
-            </View>
-
-            {/* Recent */}
-            <View style={styles.section}>
-              <SectionHeader title="Recently Added" />
-              {recentSchemes.slice(0, 3).map(scheme => (
-                <SchemeCard
-                  key={scheme.id}
-                  scheme={scheme}
-                  onPress={handleSchemePress}
-                  isBookmarked={isBookmarked(scheme.id)}
-                  onToggleBookmark={toggleBookmark}
-                />
-              ))}
-            </View>
-          </>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+          {/* Recent */}
+          <View style={styles.section}>
+            <SectionHeader title="Recently Added" />
+            {recentSchemes.slice(0, 3).map(scheme => (
+              <SchemeCard
+                key={scheme.id}
+                scheme={scheme}
+                onPress={handleSchemePress}
+                isBookmarked={isBookmarked(scheme.id)}
+                onToggleBookmark={toggleBookmark}
+              />
+            ))}
+          </View>
+        </>
+      )}
+    </ScrollView>
   );
 };
 
@@ -214,9 +210,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-  },
-  content: {
-    paddingBottom: 100,
   },
   header: {
     flexDirection: 'row',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -12,7 +12,7 @@ import SchemeDetailsScreen from '../screens/SchemeDetailsScreen';
 import CategorySchemesScreen from '../screens/CategorySchemesScreen';
 import BookmarkScreen from '../screens/BookmarkScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import { COLORS, FONT_SIZE } from '../constants/theme';
+import { COLORS } from '../constants/theme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<BottomTabParamList>();

@@ -5,12 +5,10 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  StatusBar,
   Linking,
   Alert,
   Share,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
@@ -95,9 +93,7 @@ const SchemeDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top']}>
-      <StatusBar backgroundColor={scheme.imageColor} barStyle="light-content" />
-
+    <>
       {/* Banner Header */}
       <View style={[styles.banner, { backgroundColor: scheme.imageColor }]}>
         {/* Decorative circles */}
@@ -225,7 +221,7 @@ const SchemeDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
           />
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </>
   );
 };
 

@@ -5,11 +5,8 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  StatusBar,
-  Linking,
   Alert,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { COLORS, SPACING, FONT_SIZE, RADIUS, SHADOW } from '../constants/theme';
 
@@ -72,9 +69,8 @@ const SettingsScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top']}>
-      <StatusBar backgroundColor="#F8FAFF" barStyle="dark-content" />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
+    <>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Settings</Text>
@@ -178,13 +174,11 @@ const SettingsScreen: React.FC = () => {
 
         <Text style={styles.footerText}>Made in India 🇮🇳 · YojanaGuide © 2025</Text>
       </ScrollView>
-    </SafeAreaView>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#F8FAFF' },
-  content: { paddingBottom: 100 },
   header: {
     paddingHorizontal: SPACING.xl,
     paddingTop: SPACING.md,

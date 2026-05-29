@@ -5,9 +5,7 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
-  StatusBar,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
@@ -16,7 +14,7 @@ import { categories } from '../data/categories';
 import { useBookmarks } from '../hooks/useBookmarks';
 import SchemeCard from '../components/SchemeCard';
 import EmptyState from '../components/EmptyState';
-import { COLORS, SPACING, FONT_SIZE, RADIUS } from '../constants/theme';
+import { COLORS, SPACING, FONT_SIZE } from '../constants/theme';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CategorySchemes'>;
 
@@ -32,9 +30,7 @@ const CategorySchemesScreen: React.FC<Props> = ({ navigation, route }) => {
   const category = categories.find(c => c.id === categoryId);
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top']}>
-      <StatusBar backgroundColor={category?.color || COLORS.primary} barStyle="light-content" />
-
+    <>
       {/* Header */}
       <View style={[styles.header, { backgroundColor: category?.color || COLORS.primary }]}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
@@ -72,7 +68,7 @@ const CategorySchemesScreen: React.FC<Props> = ({ navigation, route }) => {
           />
         )}
       />
-    </SafeAreaView>
+    </>
   );
 };
 
