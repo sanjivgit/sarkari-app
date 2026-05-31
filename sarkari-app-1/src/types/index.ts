@@ -1,42 +1,63 @@
+// src/types/index.ts
+
 export interface Scheme {
   id: string;
   title: string;
+  shortTitle: string;
   category: string;
-  categoryId: string;
-  shortDescription: string;
+  tagline: string;
   description: string;
+  launchedBy: string;
+  launchYear: string;
+  ministry: string;
   eligibility: string[];
-  benefits: string[];
+  benefits: Benefit[];
   documents: string[];
-  applySteps: string[];
+  applySteps: ApplyStep[];
   importantNotes: string[];
   officialLink: string;
-  imageColor: string; // gradient color for the scheme card
-  isFeatured: boolean;
-  isTrending: boolean;
-  launchedYear: string;
-  ministry: string;
+  helplineNumber?: string;
+  image: string;
+  coverColor: string;
   tags: string[];
+  faq: FAQ[];
 }
 
-export interface Category {
-  id: string;
-  name: string;
+export interface Benefit {
   icon: string;
-  color: string;
-  bgColor: string;
-  count: number;
+  title: string;
+  description: string;
+}
+
+export interface ApplyStep {
+  step: number;
+  title: string;
+  description: string;
+}
+
+export interface FAQ {
+  question: string;
+  answer: string;
 }
 
 export type RootStackParamList = {
   Splash: undefined;
   Main: undefined;
-  SchemeDetails: { schemeId: string };
-  CategorySchemes: { categoryId: string; categoryName: string };
+  SchemeDetail: { schemeId: string; section?: string };
+  Eligibility: { schemeId: string };
+  Benefits: { schemeId: string };
+  Documents: { schemeId: string };
+  ApplyProcess: { schemeId: string };
+  FAQ: { schemeId: string };
+  Bookmarks: undefined;
+  Settings: undefined;
+  About: undefined;
 };
 
 export type BottomTabParamList = {
   Home: undefined;
   Bookmarks: undefined;
   Settings: undefined;
+  Eligibility: { schemeId: string };
+  FAQ: { schemeId: string };
 };

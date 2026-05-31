@@ -1,315 +1,445 @@
-import React, { useState, useMemo } from 'react';
+// src/screens/HomeScreen.tsx
+import React, { useRef } from 'react';
 import {
   View,
   Text,
   ScrollView,
-  FlatList,
   TouchableOpacity,
   StyleSheet,
+  StatusBar,
+  Animated,
+  Dimensions,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { CompositeScreenProps } from '@react-navigation/native';
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { RootStackParamList, BottomTabParamList } from '../types';
-import { schemes } from '../data/schemes';
-import { categories } from '../data/categories';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types';
+import { featuredScheme } from '../data/schemes';
+import { Colors, Shadow } from '../theme/colors';
+import { DisclaimerBanner } from '../components';
 import { useBookmarks } from '../hooks/useBookmarks';
-import SchemeCard from '../components/SchemeCard';
-import CategoryCard from '../components/CategoryCard';
-import SectionHeader from '../components/SectionHeader';
-import SearchBar from '../components/SearchBar';
-import DisclaimerBanner from '../components/DisclaimerBanner';
-import EmptyState from '../components/EmptyState';
-import { COLORS, SPACING, FONT_SIZE, RADIUS } from '../constants/theme';
 
-type Props = CompositeScreenProps<
-  BottomTabScreenProps<BottomTabParamList, 'Home'>,
-  NativeStackScreenProps<RootStackParamList>
->;
+const { width } = Dimensions.get('window');
+
+type Props = {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Main'>;
+};
+
+const MENU_ITEMS = [
+  // { icon: '✅', label: 'पात्रता\nEligibility', screen: 'Eligibility', color: '#E8F5E9', accent: '#2E7D32' },
+  {
+    icon: '🎁',
+    label: 'लाभ\nBenefits',
+    screen: 'Benefits',
+    color: '#E3F2FD',
+    accent: '#1565C0',
+  },
+  {
+    icon: '📄',
+    label: 'दस्तावेज़\nDocuments',
+    screen: 'Documents',
+    color: '#FFF3E0',
+    accent: '#E65100',
+  },
+  {
+    icon: '📋',
+    label: 'आवेदन\nApply Steps',
+    screen: 'ApplyProcess',
+    color: '#F3E5F5',
+    accent: '#6A1B9A',
+  },
+  // { icon: '💬', label: 'सवाल\nFAQ', screen: 'FAQ', color: '#E0F7FA', accent: '#00695C' },
+  // { icon: '🔖', label: 'सेव\nBookmarks', screen: 'Bookmarks', color: '#FCE4EC', accent: '#C62828' },
+];
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const scheme = featuredScheme;
 
-  const featuredSchemes = useMemo(() => schemes.filter(s => s.isFeatured), []);
-  const trendingSchemes = useMemo(() => schemes.filter(s => s.isTrending), []);
-  const recentSchemes = useMemo(() => [...schemes].slice(-4).reverse(), []);
-
-  const searchResults = useMemo(() => {
-    if (!searchQuery.trim()) return [];
-    return schemes.filter(s =>
-      s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())),
-    );
-  }, [searchQuery]);
-
-  const handleSchemePress = (schemeId: string) => {
-    navigation.navigate('SchemeDetails', { schemeId });
-  };
-
-  const handleCategoryPress = (categoryId: string, categoryName: string) => {
-    navigation.navigate('CategorySchemes', { categoryId, categoryName });
-  };
-
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, 1],
+    extrapolate: 'clamp',
+  });
 
   return (
-    <ScrollView
-      style={styles.container}
-      showsVerticalScrollIndicator={false}>
+    <View style={styles.container}>
+      {/* Sticky mini header */}
+      <Animated.View style={[styles.stickyHeader, { opacity: headerOpacity }]}>
+        <Text style={styles.stickyTitle}>PM-KISAN Yojana</Text>
+      </Animated.View>
 
-      {/* Header */}
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>Namaste! 🙏</Text>
-          <Text style={styles.heading}>Find Your{'\n'}Right Scheme</Text>
-        </View>
-        <TouchableOpacity style={styles.notifBtn}>
-          <Icon name="notifications-none" size={24} color={COLORS.text.primary} />
-          <View style={styles.notifDot} />
-        </TouchableOpacity>
-      </View>
-
-      {/* Search */}
-      <SearchBar
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        onClear={() => setSearchQuery('')}
-      />
-
-      {/* Search Results */}
-      {searchQuery.trim().length > 0 ? (
-        <View style={styles.searchResults}>
-          <Text style={styles.searchResultsTitle}>
-            {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} for "{searchQuery}"
-          </Text>
-          {searchResults.length === 0 ? (
-            <EmptyState
-              icon="search-off"
-              title="No schemes found"
-              subtitle="Try different keywords or browse by category"
-            />
-          ) : (
-            searchResults.map(scheme => (
-              <SchemeCard
-                key={scheme.id}
-                scheme={scheme}
-                onPress={handleSchemePress}
-                isBookmarked={isBookmarked(scheme.id)}
-                onToggleBookmark={toggleBookmark}
-              />
-            ))
-          )}
-        </View>
-      ) : (
-        <>
-          {/* Disclaimer */}
-          <View style={styles.section}>
-            <DisclaimerBanner />
-          </View>
-
-          {/* Stats Banner */}
-          <View style={styles.statsBanner}>
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{schemes.length}+</Text>
-              <Text style={styles.statLabel}>Schemes</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{categories.length}</Text>
-              <Text style={styles.statLabel}>Categories</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>Free</Text>
-              <Text style={styles.statLabel}>Access</Text>
-            </View>
-          </View>
-
-          {/* Categories */}
-          <View style={styles.section}>
-            <SectionHeader
-              title="Categories"
-              onSeeAll={() => { }}
-            />
-            <View style={styles.categoriesGrid}>
-              {categories.map((cat, index) => (
-                <View key={cat.id} style={styles.categoryItem}>
-                  <CategoryCard
-                    category={cat}
-                    onPress={handleCategoryPress}
-                  />
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          {
+            useNativeDriver: true,
+          },
+        )}
+        scrollEventThrottle={16}
+      >
+        {/* ── Hero Banner ── */}
+        <View style={styles.hero}>
+          <View style={styles.heroBg} />
+          <View style={styles.heroContent}>
+            <View style={styles.heroTop}>
+              <View style={styles.appBrand}>
+                <Text style={styles.brandIcon}>🌾</Text>
+                <View>
+                  <Text style={styles.brandName}>YojanaGuide</Text>
+                  <Text style={styles.brandSub}>Govt. Scheme Info</Text>
                 </View>
-              ))}
+              </View>
+            </View>
+
+            {/* Scheme Hero Card */}
+            <View style={styles.schemeHeroCard}>
+              <View style={styles.schemeHeroBadge}>
+                <Text style={styles.schemeHeroBadgeText}>
+                  🌟 Featured Scheme
+                </Text>
+              </View>
+              <Text style={styles.schemeHeroTitle}>{scheme.title}</Text>
+              <Text style={styles.schemeHeroTagline}>{scheme.tagline}</Text>
+
+              <View style={styles.schemeMetaRow}>
+                <View style={styles.schemeMeta}>
+                  <Text style={styles.schemeMetaVal}>₹6,000</Text>
+                  <Text style={styles.schemeMetaLabel}>Per Year</Text>
+                </View>
+                <View style={styles.schemeMetaDivider} />
+                <View style={styles.schemeMeta}>
+                  <Text style={styles.schemeMetaVal}>3</Text>
+                  <Text style={styles.schemeMetaLabel}>Installments</Text>
+                </View>
+                <View style={styles.schemeMetaDivider} />
+                <View style={styles.schemeMeta}>
+                  <Text style={styles.schemeMetaVal}>2019</Text>
+                  <Text style={styles.schemeMetaLabel}>Launched</Text>
+                </View>
+              </View>
+
+              <View style={styles.schemeHeroBtns}>
+                <TouchableOpacity
+                  style={styles.exploreBtn}
+                  onPress={() =>
+                    navigation.navigate('SchemeDetail', { schemeId: scheme.id })
+                  }
+                  activeOpacity={0.85}
+                >
+                  <Text style={styles.exploreBtnText}>Explore Scheme →</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
+        </View>
 
-          {/* Featured Schemes */}
-          <View style={styles.section}>
-            <SectionHeader
-              title="Featured Schemes"
-              onSeeAll={() => navigation.navigate('CategorySchemes', { categoryId: '', categoryName: 'All' })}
-            />
-            <FlatList
-              data={featuredSchemes}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              keyExtractor={item => item.id}
-              renderItem={({ item }) => (
-                <SchemeCard
-                  scheme={item}
-                  onPress={handleSchemePress}
-                  isBookmarked={isBookmarked(item.id)}
-                  onToggleBookmark={toggleBookmark}
-                  compact
-                />
-              )}
-              contentContainerStyle={styles.horizontalList}
-            />
-          </View>
-
-          {/* Trending */}
-          <View style={styles.section}>
-            <SectionHeader title="🔥 Trending Now" />
-            {trendingSchemes.slice(0, 3).map(scheme => (
-              <SchemeCard
-                key={scheme.id}
-                scheme={scheme}
-                onPress={handleSchemePress}
-                isBookmarked={isBookmarked(scheme.id)}
-                onToggleBookmark={toggleBookmark}
-              />
+        {/* ── Quick Actions Grid ── */}
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Quick Access</Text>
+          <View style={styles.menuGrid}>
+            {MENU_ITEMS.map(item => (
+              <TouchableOpacity
+                key={item.screen}
+                style={[styles.menuItem, { backgroundColor: item.color }]}
+                onPress={() => {
+                  if (item.screen === 'Bookmarks') {
+                    navigation.navigate('Bookmarks');
+                  } else {
+                    navigation.navigate(item.screen as any, {
+                      schemeId: scheme.id,
+                    });
+                  }
+                }}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.menuItemIcon}>{item.icon}</Text>
+                <Text style={[styles.menuItemLabel, { color: item.accent }]}>
+                  {item.label}
+                </Text>
+              </TouchableOpacity>
             ))}
           </View>
+        </View>
 
-          {/* Recent */}
-          <View style={styles.section}>
-            <SectionHeader title="Recently Added" />
-            {recentSchemes.slice(0, 3).map(scheme => (
-              <SchemeCard
-                key={scheme.id}
-                scheme={scheme}
-                onPress={handleSchemePress}
-                isBookmarked={isBookmarked(scheme.id)}
-                onToggleBookmark={toggleBookmark}
-              />
+        {/* ── About This Scheme ── */}
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>About Scheme</Text>
+          <TouchableOpacity
+            style={styles.aboutCard}
+            onPress={() =>
+              navigation.navigate('SchemeDetail', { schemeId: scheme.id })
+            }
+            activeOpacity={0.9}
+          >
+            <Text style={styles.aboutText} numberOfLines={4}>
+              {scheme.description}
+            </Text>
+            <Text style={styles.readMore}>Read more →</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* ── Key Highlights ── */}
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Key Highlights</Text>
+          {[
+            {
+              icon: '💰',
+              text: 'Direct ₹2,000 every 4 months in your bank account',
+            },
+            { icon: '📱', text: 'Easy online registration at pmkisan.gov.in' },
+            { icon: '🆓', text: 'Completely FREE — no agent fees required' },
+            { icon: '🏦', text: 'Linked directly to Aadhaar & bank account' },
+          ].map((h, i) => (
+            <View key={i} style={styles.highlightRow}>
+              <Text style={styles.highlightIcon}>{h.icon}</Text>
+              <Text style={styles.highlightText}>{h.text}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* ── Tags ── */}
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Tags</Text>
+          <View style={styles.tagsRow}>
+            {scheme.tags.map(tag => (
+              <View key={tag} style={styles.tagPill}>
+                <Text style={styles.tagPillText}>{tag}</Text>
+              </View>
             ))}
           </View>
-        </>
-      )}
-    </ScrollView>
+        </View>
+
+        {/* Helpline */}
+        {scheme.helplineNumber && (
+          <View style={styles.section}>
+            <View style={styles.helplineCard}>
+              <Text style={styles.helplineIcon}>📞</Text>
+              <View style={styles.helplineContent}>
+                <Text style={styles.helplineLabel}>Helpline Number</Text>
+                <Text style={styles.helplineNumber}>
+                  {scheme.helplineNumber}
+                </Text>
+                <Text style={styles.helplineSub}>
+                  Toll Free • Mon–Sat, 9am–6pm
+                </Text>
+              </View>
+            </View>
+          </View>
+        )}
+
+        <DisclaimerBanner />
+        <View style={{ height: 32 }} />
+      </Animated.ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: '#F8FAFF',
+  container: { flex: 1, backgroundColor: Colors.background },
+
+  stickyHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 100,
+    backgroundColor: Colors.primary,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
   },
-  container: {
-    flex: 1,
+  stickyTitle: { color: Colors.white, fontWeight: '700', fontSize: 16 },
+
+  hero: { backgroundColor: Colors.primary, paddingBottom: 24 },
+  heroBg: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 40,
+    backgroundColor: Colors.background,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
   },
-  header: {
+  heroContent: { padding: 20 },
+
+  heroTop: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    paddingHorizontal: SPACING.xl,
-    paddingTop: SPACING.md,
-    paddingBottom: SPACING.xl,
+    marginBottom: 20,
   },
-  greeting: {
-    fontSize: FONT_SIZE.md,
-    color: COLORS.text.secondary,
+  appBrand: { flexDirection: 'row', alignItems: 'center' },
+  brandIcon: { fontSize: 28, marginRight: 10 },
+  brandName: { color: Colors.white, fontWeight: '800', fontSize: 18 },
+  brandSub: { color: 'rgba(255,255,255,0.7)', fontSize: 11 },
+  settingsBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  settingsIcon: { fontSize: 18 },
+
+  schemeHeroCard: {
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    padding: 20,
+    ...Shadow.md,
+  },
+  schemeHeroBadge: {
+    backgroundColor: Colors.primaryLight,
+    alignSelf: 'flex-start',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+    marginBottom: 10,
+  },
+  schemeHeroBadgeText: {
+    fontSize: 12,
+    color: Colors.primary,
+    fontWeight: '700',
+  },
+  schemeHeroTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: Colors.textPrimary,
     marginBottom: 4,
   },
-  heading: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: COLORS.text.primary,
-    lineHeight: 32,
-    letterSpacing: -0.5,
+  schemeHeroTagline: {
+    fontSize: 14,
+    color: Colors.textSecondary,
+    marginBottom: 16,
   },
-  notifBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: COLORS.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  notifDot: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#EA4335',
-    borderWidth: 1.5,
-    borderColor: '#fff',
-  },
-  section: {
-    paddingHorizontal: SPACING.xl,
-    marginTop: SPACING.xl,
-  },
-  searchResults: {
-    paddingHorizontal: SPACING.xl,
-    marginTop: SPACING.xl,
-  },
-  searchResultsTitle: {
-    fontSize: FONT_SIZE.md,
-    color: COLORS.text.secondary,
-    marginBottom: SPACING.lg,
-    fontWeight: '600',
-  },
-  statsBanner: {
+
+  schemeMetaRow: {
     flexDirection: 'row',
-    marginHorizontal: SPACING.xl,
-    marginTop: SPACING.xl,
-    backgroundColor: COLORS.primary,
-    borderRadius: RADIUS.xl,
-    padding: SPACING.xl,
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: Colors.border,
+    paddingTop: 14,
+    marginBottom: 16,
   },
-  statItem: {
-    alignItems: 'center',
+  schemeMeta: { flex: 1, alignItems: 'center' },
+  schemeMetaVal: { fontSize: 18, fontWeight: '800', color: Colors.primary },
+  schemeMetaLabel: { fontSize: 11, color: Colors.textSecondary, marginTop: 2 },
+  schemeMetaDivider: { width: 1, backgroundColor: Colors.border },
+
+  schemeHeroBtns: { flexDirection: 'row', gap: 10 },
+  exploreBtn: {
     flex: 1,
+    backgroundColor: Colors.primary,
+    paddingVertical: 13,
+    borderRadius: 12,
+    alignItems: 'center',
   },
-  statNumber: {
-    fontSize: FONT_SIZE.xxl,
+  exploreBtnText: { color: Colors.white, fontWeight: '700', fontSize: 15 },
+  bookmarkBtn: {
+    width: 46,
+    height: 46,
+    borderRadius: 12,
+    backgroundColor: Colors.background,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: Colors.border,
+  },
+  bookmarkBtnActive: {
+    backgroundColor: Colors.primaryLight,
+    borderColor: Colors.primary,
+  },
+  bookmarkBtnIcon: { fontSize: 20 },
+
+  section: { paddingHorizontal: 16, marginTop: 20 },
+  sectionLabel: {
+    fontSize: 17,
     fontWeight: '800',
-    color: '#fff',
+    color: Colors.textPrimary,
+    marginBottom: 12,
   },
-  statLabel: {
-    fontSize: FONT_SIZE.xs,
-    color: 'rgba(255,255,255,0.75)',
+
+  menuGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  menuItem: {
+    width: (width - 53) / 3,
+    paddingVertical: 16,
+    paddingHorizontal: 8,
+    borderRadius: 16,
+    alignItems: 'center',
+  },
+  menuItemIcon: { fontSize: 26, marginBottom: 8 },
+  menuItemLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    textAlign: 'center',
+    lineHeight: 16,
+  },
+
+  aboutCard: {
+    backgroundColor: Colors.white,
+    borderRadius: 16,
+    padding: 16,
+    ...Shadow.sm,
+  },
+  aboutText: { fontSize: 14, color: Colors.textSecondary, lineHeight: 22 },
+  readMore: {
+    color: Colors.primary,
+    fontWeight: '700',
+    marginTop: 10,
+    fontSize: 14,
+  },
+
+  highlightRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: Colors.white,
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 8,
+    ...Shadow.sm,
+  },
+  highlightIcon: { fontSize: 20, marginRight: 12 },
+  highlightText: {
+    flex: 1,
+    fontSize: 14,
+    color: Colors.textPrimary,
+    lineHeight: 20,
+    fontWeight: '500',
+  },
+
+  tagsRow: { flexDirection: 'row', flexWrap: 'wrap' },
+  tagPill: {
+    backgroundColor: Colors.primaryLight,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  tagPillText: { color: Colors.primary, fontSize: 12, fontWeight: '600' },
+
+  helplineCard: {
+    backgroundColor: '#E8F5E9',
+    borderRadius: 16,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderLeftWidth: 4,
+    borderLeftColor: Colors.green,
+  },
+  helplineIcon: { fontSize: 32, marginRight: 14 },
+  helplineContent: { flex: 1 },
+  helplineLabel: {
+    fontSize: 12,
+    color: Colors.textSecondary,
     fontWeight: '600',
+  },
+  helplineNumber: {
+    fontSize: 20,
+    color: Colors.green,
+    fontWeight: '800',
     marginTop: 2,
   },
-  statDivider: {
-    width: 1,
-    height: 32,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-  },
-  categoriesGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: SPACING.md,
-  },
-  categoryItem: {
-    width: '22%',
-  },
-  horizontalList: {
-    paddingRight: SPACING.xl,
-  },
+  helplineSub: { fontSize: 11, color: Colors.textSecondary, marginTop: 2 },
 });
 
 export default HomeScreen;

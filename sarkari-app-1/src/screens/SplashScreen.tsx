@@ -1,63 +1,39 @@
+// src/screens/SplashScreen.tsx
 import React, { useEffect, useRef } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Animated,
-  StatusBar,
-  Dimensions,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { View, Text, StyleSheet, Animated, Dimensions } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
+import { Colors } from '../theme/colors';
 
 const { width } = Dimensions.get('window');
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Splash'>;
+type Props = {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Splash'>;
+};
 
 const SplashScreen: React.FC<Props> = ({ navigation }) => {
-  const logoScale = useRef(new Animated.Value(0)).current;
-  const logoOpacity = useRef(new Animated.Value(0)).current;
-  const textOpacity = useRef(new Animated.Value(0)).current;
-  const textTranslate = useRef(new Animated.Value(20)).current;
-  const taglineOpacity = useRef(new Animated.Value(0)).current;
-  const dotsOpacity = useRef(new Animated.Value(0)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.7)).current;
+  const slideAnim = useRef(new Animated.Value(30)).current;
 
   useEffect(() => {
     Animated.sequence([
       Animated.parallel([
-        Animated.spring(logoScale, {
+        Animated.timing(fadeAnim, {
           toValue: 1,
+          duration: 700,
           useNativeDriver: true,
-          damping: 12,
-          stiffness: 120,
         }),
-        Animated.timing(logoOpacity, {
+        Animated.spring(scaleAnim, {
           toValue: 1,
-          duration: 500,
+          tension: 60,
+          friction: 7,
           useNativeDriver: true,
         }),
       ]),
-      Animated.parallel([
-        Animated.timing(textOpacity, {
-          toValue: 1,
-          duration: 400,
-          useNativeDriver: true,
-        }),
-        Animated.timing(textTranslate, {
-          toValue: 0,
-          duration: 400,
-          useNativeDriver: true,
-        }),
-      ]),
-      Animated.timing(taglineOpacity, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      Animated.timing(dotsOpacity, {
-        toValue: 1,
-        duration: 200,
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 400,
         useNativeDriver: true,
       }),
     ]).start();
@@ -67,61 +43,42 @@ const SplashScreen: React.FC<Props> = ({ navigation }) => {
     }, 2600);
 
     return () => clearTimeout(timer);
-  }, [navigation, logoScale, logoOpacity, textOpacity, textTranslate, taglineOpacity, dotsOpacity]);
+  }, []);
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor="#1A73E8" barStyle="light-content" />
-
-      {/* Background circles */}
+      {/* Background circles for depth */}
       <View style={styles.circle1} />
       <View style={styles.circle2} />
-      <View style={styles.circle3} />
 
-      {/* Logo */}
       <Animated.View
         style={[
-          styles.logoContainer,
-          {
-            opacity: logoOpacity,
-            transform: [{ scale: logoScale }],
-          },
-        ]}>
-        <View style={styles.logoOuter}>
-          <View style={styles.logoInner}>
-            <Icon name="account-balance" size={48} color="#1A73E8" />
-          </View>
+          styles.logoArea,
+          { opacity: fadeAnim, transform: [{ scale: scaleAnim }] },
+        ]}
+      >
+        {/* Logo Icon */}
+        <View style={styles.logoIcon}>
+          <Text style={styles.logoEmoji}>🌾</Text>
         </View>
+
+        <Animated.View
+          style={{ transform: [{ translateY: slideAnim }], opacity: fadeAnim }}
+        >
+          <Text style={styles.appName}>YojanaGuide</Text>
+          <Text style={styles.tagline}>सरकारी योजनाओं की जानकारी</Text>
+          <Text style={styles.taglineEn}>Government Scheme Information</Text>
+        </Animated.View>
       </Animated.View>
 
-      {/* App Name */}
-      <Animated.Text
-        style={[
-          styles.appName,
-          {
-            opacity: textOpacity,
-            transform: [{ translateY: textTranslate }],
-          },
-        ]}>
-        YojanaGuide
-      </Animated.Text>
-
-      {/* Tagline */}
-      <Animated.Text style={[styles.tagline, { opacity: taglineOpacity }]}>
-        Your Guide to Government Schemes
-      </Animated.Text>
-
-      {/* Loading dots */}
-      <Animated.View style={[styles.dots, { opacity: dotsOpacity }]}>
-        <View style={[styles.dot, styles.dotActive]} />
-        <View style={styles.dot} />
-        <View style={styles.dot} />
+      <Animated.View style={[styles.bottomSection, { opacity: fadeAnim }]}>
+        <View style={styles.dotsRow}>
+          {[0, 1, 2].map(i => (
+            <View key={i} style={[styles.dot, i === 1 && styles.dotActive]} />
+          ))}
+        </View>
+        <Text style={styles.version}>v1.0.0 • Free App</Text>
       </Animated.View>
-
-      {/* Disclaimer */}
-      <Text style={styles.disclaimer}>
-        Not affiliated with any government entity
-      </Text>
     </View>
   );
 };
@@ -129,16 +86,16 @@ const SplashScreen: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1A73E8',
-    justifyContent: 'center',
+    backgroundColor: Colors.primary,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   circle1: {
     position: 'absolute',
     width: width * 0.8,
     height: width * 0.8,
     borderRadius: width * 0.4,
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: 'rgba(255,255,255,0.06)',
     top: -width * 0.2,
     right: -width * 0.2,
   },
@@ -147,79 +104,54 @@ const styles = StyleSheet.create({
     width: width * 0.6,
     height: width * 0.6,
     borderRadius: width * 0.3,
-    backgroundColor: 'rgba(255,255,255,0.07)',
-    bottom: -width * 0.15,
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    bottom: -width * 0.1,
     left: -width * 0.15,
   },
-  circle3: {
-    position: 'absolute',
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: 'rgba(255,255,255,0.06)',
-    top: 100,
-    left: 40,
-  },
-  logoContainer: {
-    marginBottom: 28,
-  },
-  logoOuter: {
-    width: 110,
-    height: 110,
-    borderRadius: 55,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    justifyContent: 'center',
+  logoArea: { alignItems: 'center' },
+  logoIcon: {
+    width: 96,
+    height: 96,
+    borderRadius: 28,
+    backgroundColor: 'rgba(255,255,255,0.15)',
     alignItems: 'center',
-  },
-  logoInner: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    backgroundColor: '#fff',
     justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 16,
-    elevation: 10,
+    marginBottom: 24,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.3)',
   },
+  logoEmoji: { fontSize: 48 },
   appName: {
-    fontSize: 34,
+    fontSize: 32,
     fontWeight: '800',
-    color: '#fff',
-    letterSpacing: -0.5,
-    marginBottom: 10,
+    color: Colors.white,
+    textAlign: 'center',
+    letterSpacing: 0.5,
   },
   tagline: {
-    fontSize: 15,
-    color: 'rgba(255,255,255,0.8)',
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.85)',
+    textAlign: 'center',
+    marginTop: 6,
     fontWeight: '500',
-    letterSpacing: 0.2,
-    marginBottom: 60,
   },
-  dots: {
-    flexDirection: 'row',
-    gap: 8,
-    marginBottom: 80,
+  taglineEn: {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.6)',
+    textAlign: 'center',
+    marginTop: 4,
   },
+  bottomSection: { position: 'absolute', bottom: 48, alignItems: 'center' },
+  dotsRow: { flexDirection: 'row', marginBottom: 12 },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: 'rgba(255,255,255,0.4)',
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    marginHorizontal: 3,
   },
-  dotActive: {
-    backgroundColor: '#fff',
-    width: 24,
-  },
-  disclaimer: {
-    position: 'absolute',
-    bottom: 40,
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.5)',
-    letterSpacing: 0.3,
-  },
+  dotActive: { backgroundColor: Colors.white, width: 18 },
+  version: { fontSize: 12, color: 'rgba(255,255,255,0.5)' },
 });
 
 export default SplashScreen;

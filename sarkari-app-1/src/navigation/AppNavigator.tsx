@@ -1,21 +1,27 @@
+// src/navigation/AppNavigator.tsx
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { BottomTabParamList, RootStackParamList } from '../types';
 
-import { RootStackParamList, BottomTabParamList } from '../types';
 import SplashScreen from '../screens/SplashScreen';
 import HomeScreen from '../screens/HomeScreen';
-import SchemeDetailsScreen from '../screens/SchemeDetailsScreen';
-import CategorySchemesScreen from '../screens/CategorySchemesScreen';
-import BookmarkScreen from '../screens/BookmarkScreen';
+import SchemeDetailScreen from '../screens/SchemeDetailScreen';
+import EligibilityScreen from '../screens/EligibilityScreen';
+import BenefitsScreen from '../screens/BenefitsScreen';
+import DocumentsScreen from '../screens/DocumentsScreen';
+import ApplyProcessScreen from '../screens/ApplyProcessScreen';
+import FAQScreen from '../screens/FAQScreen';
+import BookmarksScreen from '../screens/BookmarksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import { COLORS } from '../constants/theme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<BottomTabParamList>();
+
+import { StyleSheet } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Colors } from '../theme/colors';
 
 const BottomTabs: React.FC = () => {
   return (
@@ -23,36 +29,70 @@ const BottomTabs: React.FC = () => {
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: COLORS.text.light,
+        tabBarActiveTintColor: Colors.primary,
+        tabBarInactiveTintColor: Colors.text.light,
         tabBarLabelStyle: styles.tabLabel,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName = 'home';
           if (route.name === 'Home') iconName = 'home';
-          else if (route.name === 'Bookmarks') iconName = focused ? 'bookmark' : 'bookmark-outline';
+          else if (route.name === 'Bookmarks')
+            iconName = focused ? 'bookmark' : 'bookmark-outline';
           else if (route.name === 'Settings') iconName = 'settings';
+          else if (route.name === 'Eligibility') iconName = 'checklist';
+          else if (route.name === 'FAQ') iconName = 'message';
           return <Icon name={iconName} size={24} color={color} />;
         },
-      })}>
-      <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Home' }} />
-      <Tab.Screen name="Bookmarks" component={BookmarkScreen} options={{ tabBarLabel: 'Saved' }} />
-      <Tab.Screen name="Settings" component={SettingsScreen} options={{ tabBarLabel: 'Settings' }} />
+      })}
+    >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ tabBarLabel: 'Home' }}
+      />
+      <Tab.Screen
+        name="Eligibility"
+        component={EligibilityScreen}
+        initialParams={{
+          schemeId: 'pm-kisan',
+        }}
+        options={{ tabBarLabel: 'Eligibility' }}
+      />
+      <Tab.Screen
+        name="FAQ"
+        component={FAQScreen}
+        initialParams={{
+          schemeId: 'pm-kisan',
+        }}
+        options={{ tabBarLabel: 'FAQ' }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{ tabBarLabel: 'Settings' }}
+      />
     </Tab.Navigator>
   );
 };
 
-const AppNavigator: React.FC = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Splash" component={SplashScreen} />
-        <Stack.Screen name="Main" component={BottomTabs} />
-        <Stack.Screen name="SchemeDetails" component={SchemeDetailsScreen} />
-        <Stack.Screen name="CategorySchemes" component={CategorySchemesScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-};
+const AppNavigator = () => (
+  <NavigationContainer>
+    <Stack.Navigator
+      initialRouteName="Splash"
+      screenOptions={{ headerShown: false, animation: 'slide_from_right' }}
+    >
+      <Stack.Screen name="Splash" component={SplashScreen} />
+      <Stack.Screen name="Main" component={BottomTabs} />
+      <Stack.Screen name="SchemeDetail" component={SchemeDetailScreen} />
+      <Stack.Screen name="Eligibility" component={EligibilityScreen} />
+      <Stack.Screen name="Benefits" component={BenefitsScreen} />
+      <Stack.Screen name="Documents" component={DocumentsScreen} />
+      <Stack.Screen name="ApplyProcess" component={ApplyProcessScreen} />
+      <Stack.Screen name="FAQ" component={FAQScreen} />
+      <Stack.Screen name="Bookmarks" component={BookmarksScreen} />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
+    </Stack.Navigator>
+  </NavigationContainer>
+);
 
 const styles = StyleSheet.create({
   tabBar: {
