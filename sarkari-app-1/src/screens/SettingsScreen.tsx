@@ -7,11 +7,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   Pressable,
+  Image,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { Colors, Shadow } from '../theme/colors';
 import { SETTINGS_SECTIONS } from '../data/schemes';
+import { appName } from '../data/constant';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Settings'>;
@@ -35,9 +37,13 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => (
       {/* App Logo */}
       <View style={styles.appLogoSection}>
         <View style={styles.appLogo}>
-          <Text style={styles.appLogoEmoji}>🌾</Text>
+          {/* <Text style={styles.appLogoEmoji}>🌾</Text> */}
+          <Image
+            style={styles.appLogoEmoji}
+            source={require('../assets/logo.png')}
+          />
         </View>
-        <Text style={styles.appName}>YojanaGuide</Text>
+        <Text style={styles.appName}>{appName}</Text>
         <Text style={styles.appTagline}>Government Scheme Information</Text>
       </View>
 
@@ -117,7 +123,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Colors.primary,
   },
-  appLogoEmoji: { fontSize: 44 },
+  appLogoEmoji: { height: 80, width: 80 },
   appName: { fontSize: 26, fontWeight: '900', color: Colors.textPrimary },
   appTagline: { fontSize: 13, color: Colors.textSecondary, marginTop: 4 },
 

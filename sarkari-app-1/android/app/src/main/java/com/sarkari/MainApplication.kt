@@ -1,4 +1,4 @@
-package com.sarkari
+package com.pmkishan.kishanguide
 
 import android.app.Application
 import com.facebook.react.PackageList

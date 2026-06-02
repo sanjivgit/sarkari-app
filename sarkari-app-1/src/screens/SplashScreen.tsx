@@ -1,9 +1,17 @@
 // src/screens/SplashScreen.tsx
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Animated,
+  Dimensions,
+  Image,
+} from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { Colors } from '../theme/colors';
+import { appName } from '../data/constant';
 
 const { width } = Dimensions.get('window');
 
@@ -59,13 +67,16 @@ const SplashScreen: React.FC<Props> = ({ navigation }) => {
       >
         {/* Logo Icon */}
         <View style={styles.logoIcon}>
-          <Text style={styles.logoEmoji}>🌾</Text>
+          <Image
+            style={styles.logoEmoji}
+            source={require('../assets/logo.png')}
+          />
         </View>
 
         <Animated.View
           style={{ transform: [{ translateY: slideAnim }], opacity: fadeAnim }}
         >
-          <Text style={styles.appName}>YojanaGuide</Text>
+          <Text style={styles.appName}>{appName}</Text>
           <Text style={styles.tagline}>सरकारी योजनाओं की जानकारी</Text>
           <Text style={styles.taglineEn}>Government Scheme Information</Text>
         </Animated.View>
@@ -120,7 +131,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'rgba(255,255,255,0.3)',
   },
-  logoEmoji: { fontSize: 48 },
+  logoEmoji: { width: 80, height: 80 },
   appName: {
     fontSize: 32,
     fontWeight: '800',

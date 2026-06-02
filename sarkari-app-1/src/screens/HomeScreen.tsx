@@ -3,19 +3,18 @@ import React, { useRef } from 'react';
 import {
   View,
   Text,
-  ScrollView,
   TouchableOpacity,
   StyleSheet,
-  StatusBar,
   Animated,
   Dimensions,
+  Image,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { featuredScheme } from '../data/schemes';
 import { Colors, Shadow } from '../theme/colors';
 import { DisclaimerBanner } from '../components';
-import { useBookmarks } from '../hooks/useBookmarks';
+import { appName } from '../data/constant';
 
 const { width } = Dimensions.get('window');
 
@@ -83,9 +82,12 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           <View style={styles.heroContent}>
             <View style={styles.heroTop}>
               <View style={styles.appBrand}>
-                <Text style={styles.brandIcon}>🌾</Text>
+                <Image
+                  style={styles.brandIcon}
+                  source={require('../assets/logo.png')}
+                />
                 <View>
-                  <Text style={styles.brandName}>YojanaGuide</Text>
+                  <Text style={styles.brandName}>{appName}</Text>
                   <Text style={styles.brandSub}>Govt. Scheme Info</Text>
                 </View>
               </View>
@@ -269,7 +271,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   appBrand: { flexDirection: 'row', alignItems: 'center' },
-  brandIcon: { fontSize: 28, marginRight: 10 },
+  brandIcon: { fontSize: 28, marginRight: 10, height: 50, width: 50 },
   brandName: { color: Colors.white, fontWeight: '800', fontSize: 18 },
   brandSub: { color: 'rgba(255,255,255,0.7)', fontSize: 11 },
   settingsBtn: {

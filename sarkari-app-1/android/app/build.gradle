@@ -79,9 +79,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.sarkari"
+    namespace "com.pmkishan.kishanguide"
     defaultConfig {
-        applicationId "com.sarkari"
+        applicationId "com.pmkishan.kishanguide"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

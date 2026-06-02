@@ -22,6 +22,8 @@ import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Colors } from '../theme/colors';
+import PrivacyPolicy from '../screens/PrivacyPolicy';
+import { navigationRef } from '../utils/helper';
 
 const BottomTabs: React.FC = () => {
   return (
@@ -75,7 +77,7 @@ const BottomTabs: React.FC = () => {
 };
 
 const AppNavigator = () => (
-  <NavigationContainer>
+  <NavigationContainer ref={navigationRef}>
     <Stack.Navigator
       initialRouteName="Splash"
       screenOptions={{ headerShown: false, animation: 'slide_from_right' }}
@@ -90,6 +92,7 @@ const AppNavigator = () => (
       <Stack.Screen name="FAQ" component={FAQScreen} />
       <Stack.Screen name="Bookmarks" component={BookmarksScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
     </Stack.Navigator>
   </NavigationContainer>
 );

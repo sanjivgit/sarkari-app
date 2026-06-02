@@ -52,6 +52,8 @@ export type RootStackParamList = {
   Bookmarks: undefined;
   Settings: undefined;
   About: undefined;
+  PrivacyPolicy: undefined;
+  TermsAndConditions: undefined;
 };
 
 export type BottomTabParamList = {

@@ -1,4 +1,4 @@
-package com.sarkari
+package com.pmkishan.kishanguide
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

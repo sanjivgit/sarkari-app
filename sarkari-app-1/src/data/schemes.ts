@@ -1,6 +1,7 @@
 // src/data/schemes.ts
 import { Alert, Linking } from 'react-native';
 import { Scheme } from '../types';
+import { navigate } from '../utils/helper';
 
 export const schemes: Scheme[] = [
   {
@@ -187,7 +188,7 @@ export const SETTINGS_SECTIONS = [
   {
     title: 'App Info',
     items: [
-      { icon: '📱', label: 'App Name', value: 'YojanaGuide', action: null },
+      { icon: '📱', label: 'App Name', value: 'Kishan Guide', action: null },
       { icon: '🔢', label: 'Version', value: '1.0.0', action: null },
       {
         icon: '👨‍💻',
@@ -210,11 +211,13 @@ export const SETTINGS_SECTIONS = [
         icon: '📋',
         label: 'Privacy Policy',
         value: '',
-        action: () =>
-          Alert.alert(
-            'Privacy Policy',
-            'This app does not collect any personal data. All data is stored locally on your device only.',
-          ),
+        action: () => navigate("PrivacyPolicy", 'https://pmkisan.gov.in')
+      },
+      {
+        icon: '📋',
+        label: `Term's and Conditions `,
+        value: '',
+        action: () => navigate("TermsAndConditions", 'https://pmkisan.gov.in')
       },
       {
         icon: '⚠️',

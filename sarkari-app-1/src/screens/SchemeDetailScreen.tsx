@@ -10,6 +10,7 @@ import {
   Linking,
   Alert,
   Pressable,
+  Image,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
@@ -81,7 +82,10 @@ const SchemeDetailScreen: React.FC<Props> = ({ navigation, route }) => {
         {/* Hero */}
         <View style={styles.heroSection}>
           <View style={styles.heroEmoji}>
-            <Text style={styles.heroEmojiText}>🌾</Text>
+            <Image
+              style={styles.heroLogo}
+              source={require('../assets/logo.png')}
+            />
           </View>
           <View style={styles.heroBadge}>
             <Text style={styles.heroBadgeText}>{scheme.category} Scheme</Text>
@@ -254,7 +258,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'rgba(255,255,255,0.3)',
   },
-  heroEmojiText: { fontSize: 40 },
+  heroLogo: { width: 70, height: 70 },
   heroBadge: {
     backgroundColor: 'rgba(255,255,255,0.2)',
     paddingHorizontal: 12,
