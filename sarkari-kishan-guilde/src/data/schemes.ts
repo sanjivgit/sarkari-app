@@ -26,22 +26,26 @@ export const schemes: Scheme[] = [
       {
         icon: 'cash',
         title: '₹6,000 Per Year',
-        description: 'Annual financial benefit of ₹6,000 provided in 3 installments of ₹2,000 each.',
+        description:
+          'Annual financial benefit of ₹6,000 provided in 3 installments of ₹2,000 each.',
       },
       {
         icon: 'bank-transfer',
         title: 'Direct Bank Transfer',
-        description: 'Money directly credited to registered bank account via DBT — no middlemen.',
+        description:
+          'Money directly credited to registered bank account via DBT — no middlemen.',
       },
       {
         icon: 'calendar-clock',
         title: 'Every 4 Months',
-        description: 'Installments released in April, August, and December every year.',
+        description:
+          'Installments released in April, August, and December every year.',
       },
       {
         icon: 'shield-check',
         title: '100% Government Funded',
-        description: 'Fully funded by the Central Government — no state contribution required.',
+        description:
+          'Fully funded by the Central Government — no state contribution required.',
       },
     ],
     documents: [
@@ -61,32 +65,38 @@ export const schemes: Scheme[] = [
       {
         step: 2,
         title: 'Click "New Farmer Registration"',
-        description: 'Find the "Farmers Corner" section and click "New Farmer Registration".',
+        description:
+          'Find the "Farmers Corner" section and click "New Farmer Registration".',
       },
       {
         step: 3,
         title: 'Enter Aadhaar Details',
-        description: 'Enter your Aadhaar number, mobile number, and select your State.',
+        description:
+          'Enter your Aadhaar number, mobile number, and select your State.',
       },
       {
         step: 4,
         title: 'Fill Personal & Land Details',
-        description: 'Enter your full name, bank account details, and land record information.',
+        description:
+          'Enter your full name, bank account details, and land record information.',
       },
       {
         step: 5,
         title: 'Submit & Get Reference Number',
-        description: 'Submit the form and save your registration reference number for tracking.',
+        description:
+          'Submit the form and save your registration reference number for tracking.',
       },
       {
         step: 6,
         title: 'Verification by Patwari',
-        description: 'Local Patwari/Lekhpal will verify your land records and details.',
+        description:
+          'Local Patwari/Lekhpal will verify your land records and details.',
       },
       {
         step: 7,
         title: 'Approval & First Installment',
-        description: 'After approval, first ₹2,000 installment will be transferred to your bank.',
+        description:
+          'After approval, first ₹2,000 installment will be transferred to your bank.',
       },
     ],
     importantNotes: [
@@ -106,34 +116,41 @@ export const schemes: Scheme[] = [
     faq: [
       {
         question: 'How many installments are given per year?',
-        answer: '3 installments of ₹2,000 each — in April, August, and December — totaling ₹6,000 per year.',
+        answer:
+          '3 installments of ₹2,000 each — in April, August, and December — totaling ₹6,000 per year.',
       },
       {
         question: 'What is e-KYC and is it mandatory?',
-        answer: 'e-KYC is Aadhaar-based identity verification. It is mandatory every year to continue receiving PM-KISAN benefits.',
+        answer:
+          'e-KYC is Aadhaar-based identity verification. It is mandatory every year to continue receiving PM-KISAN benefits.',
       },
       {
         question: 'Can I check my payment status?',
-        answer: 'Yes! Visit pmkisan.gov.in → Farmers Corner → Beneficiary Status → Enter Aadhaar or Account number.',
+        answer:
+          'Yes! Visit pmkisan.gov.in → Farmers Corner → Beneficiary Status → Enter Aadhaar or Account number.',
       },
       {
         question: 'My name is in land records but money is not coming. Why?',
-        answer: 'Possible reasons: Aadhaar not linked to bank account, e-KYC pending, or land records mismatch. Visit your local agriculture office.',
+        answer:
+          'Possible reasons: Aadhaar not linked to bank account, e-KYC pending, or land records mismatch. Visit your local agriculture office.',
       },
       {
         question: 'Is this scheme available for tenant farmers?',
-        answer: 'No, only farmers who own the land and whose name appears in land records are eligible.',
+        answer:
+          'No, only farmers who own the land and whose name appears in land records are eligible.',
       },
       {
         question: 'Can urban farmers apply?',
-        answer: 'Yes! Urban farmers with cultivable land are also eligible to apply for PM-KISAN.',
+        answer:
+          'Yes! Urban farmers with cultivable land are also eligible to apply for PM-KISAN.',
       },
       {
         question: 'What is the last date to apply?',
-        answer: 'There is no last date. Applications are accepted throughout the year on a rolling basis.',
+        answer:
+          'There is no last date. Applications are accepted throughout the year on a rolling basis.',
       },
     ],
-  }
+  },
 ];
 
 export const getSchemeById = (id: string): Scheme | undefined =>
@@ -211,13 +228,19 @@ export const SETTINGS_SECTIONS = [
         icon: '📋',
         label: 'Privacy Policy',
         value: '',
-        action: () => navigate("PrivacyPolicy", 'https://pmkisan.gov.in')
+        action: () =>
+          navigate('PrivacyPolicy', {
+            url: 'https://testbook-web-app.web.app/kishan-guide/privacy-policy',
+          }),
       },
       {
         icon: '📋',
-        label: `Term's and Conditions `,
+        label: `Terms & Conditions `,
         value: '',
-        action: () => navigate("TermsAndConditions", 'https://pmkisan.gov.in')
+        action: () =>
+          navigate('TermsAndConditions', {
+            url: 'https://testbook-web-app.web.app/kishan-guide/terms-and-conditions',
+          }),
       },
       {
         icon: '⚠️',

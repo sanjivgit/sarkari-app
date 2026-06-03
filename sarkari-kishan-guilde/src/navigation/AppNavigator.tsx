@@ -24,6 +24,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Colors } from '../theme/colors';
 import PrivacyPolicy from '../screens/PrivacyPolicy';
 import { navigationRef } from '../utils/helper';
+import TermsAndConditions from '../screens/TermsAndConditions';
 
 const BottomTabs: React.FC = () => {
   return (
@@ -93,7 +94,8 @@ const AppNavigator = () => (
       <Stack.Screen name="Bookmarks" component={BookmarksScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
-    </Stack.Navigator>
+      <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} />
+    </Stack.Navigator> 
   </NavigationContainer>
 );
 
