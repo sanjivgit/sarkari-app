@@ -17,6 +17,7 @@ import { RootStackParamList } from '../types';
 import { getSchemeById } from '../data/schemes';
 import { Colors, Shadow } from '../theme/colors';
 import { DisclaimerBanner } from '../components';
+import { BannerAd, MediumRect } from '../services/ads';
 
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental?.(true);
@@ -122,7 +123,9 @@ const FAQScreen: React.FC<Props> = ({ navigation, route }) => {
           </View>
         )}
 
+        <MediumRect style={{ marginHorizontal: 16 }} />
         <DisclaimerBanner />
+        <BannerAd />
         <View style={{ height: 32 }} />
       </ScrollView>
     </View>

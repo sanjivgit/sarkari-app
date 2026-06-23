@@ -14,12 +14,15 @@ import { RootStackParamList } from '../types';
 import { Colors, Shadow } from '../theme/colors';
 import { SETTINGS_SECTIONS } from '../data/schemes';
 import { appName } from '../data/constant';
+import { BannerAd, MediumRect, useRewardedAd } from '../services/ads';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Settings'>;
 };
 
-const SettingsScreen: React.FC<Props> = ({ navigation }) => (
+const SettingsScreen: React.FC<Props> = ({ navigation }) => {
+  const { showRewardedAd, isLoaded } = useRewardedAd();
+  return (
   <View style={styles.container}>
     <View style={styles.header}>
       <Pressable
@@ -85,13 +88,30 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => (
         </View>
       ))}
 
+      <MediumRect style={{ marginHorizontal: 16 }} />
+      <BannerAd />
+      <TouchableOpacity
+        style={styles.supportBtn}
+        onPress={() => showRewardedAd()}
+        activeOpacity={0.85}
+      >
+        <Text style={styles.supportBtnIcon}>🎥</Text>
+        <View style={styles.supportContent}>
+          <Text style={styles.supportTitle}>Watch Ad to Support Us</Text>
+          <Text style={styles.supportSub}>
+            {isLoaded ? 'Tap to watch a short ad' : 'Loading ad...'}
+          </Text>
+        </View>
+        <Text style={styles.supportArrow}>›</Text>
+      </TouchableOpacity>
       <Text style={styles.footerText}>
         Made with ❤️ for Indian Farmers{'\n'} Free App
       </Text>
       <View style={{ height: 32 }} />
     </ScrollView>
   </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
@@ -177,9 +197,24 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.textLight,
     lineHeight: 20,
-    marginTop: 32,
+    marginTop: 20,
     paddingHorizontal: 24,
   },
+
+  supportBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1565C0',
+    borderRadius: 16,
+    padding: 16,
+    marginHorizontal: 16,
+    marginTop: 16,
+  },
+  supportBtnIcon: { fontSize: 28, marginRight: 14 },
+  supportContent: { flex: 1 },
+  supportTitle: { color: Colors.white, fontWeight: '800', fontSize: 15 },
+  supportSub: { color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2 },
+  supportArrow: { fontSize: 22, color: Colors.white, fontWeight: '700' },
 });
 
 export default SettingsScreen;

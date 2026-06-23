@@ -1,4 +1,8 @@
 {
   "name": "sarkari",
-  "displayName": "Kishan Guide"
+  "displayName": "Kishan Guide",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-3940256099942544~1458002511",
+    "ios_app_id": "ca-app-pub-3940256099942544~1458002511"
+  }
 }

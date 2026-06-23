@@ -12,6 +12,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { Colors } from '../theme/colors';
 import { appName } from '../data/constant';
+import { useInterstitialAd } from '../services/ads';
 
 const { width } = Dimensions.get('window');
 
@@ -23,6 +24,7 @@ const SplashScreen: React.FC<Props> = ({ navigation }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.7)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
+  const { showNow, isLoaded } = useInterstitialAd();
 
   useEffect(() => {
     Animated.sequence([
@@ -47,11 +49,12 @@ const SplashScreen: React.FC<Props> = ({ navigation }) => {
     ]).start();
 
     const timer = setTimeout(() => {
+      if (isLoaded) showNow();
       navigation.replace('Main');
     }, 2600);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [navigation, fadeAnim, scaleAnim, slideAnim, showNow, isLoaded]);
 
   return (
     <View style={styles.container}>

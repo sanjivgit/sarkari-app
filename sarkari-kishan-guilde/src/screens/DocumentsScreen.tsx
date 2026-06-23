@@ -7,6 +7,7 @@ import { RootStackParamList } from '../types';
 import { getSchemeById } from '../data/schemes';
 import { Colors, Shadow } from '../theme/colors';
 import { DisclaimerBanner } from '../components';
+import { BannerAd, MediumRect } from '../services/ads';
 
 const DOC_ICONS: Record<number, string> = {
   0: '🪪',
@@ -98,7 +99,9 @@ const DocumentsScreen: React.FC<Props> = ({ navigation, route }) => {
           </Text>
         </View>
 
+        <MediumRect style={{ marginHorizontal: 16 }} />
         <DisclaimerBanner />
+        <BannerAd />
         <View style={{ height: 32 }} />
       </ScrollView>
     </View>

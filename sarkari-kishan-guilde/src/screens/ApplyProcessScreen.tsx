@@ -15,6 +15,7 @@ import { RootStackParamList } from '../types';
 import { getSchemeById } from '../data/schemes';
 import { Colors, Shadow } from '../theme/colors';
 import { DisclaimerBanner } from '../components';
+import { BannerAd, MediumRect, useInterstitialAd } from '../services/ads';
 import { WhereToApply } from '../data/whereToApply';
 
 type Props = {
@@ -23,6 +24,7 @@ type Props = {
 };
 
 const ApplyProcessScreen: React.FC<Props> = ({ navigation, route }) => {
+  const { showNow } = useInterstitialAd();
   const scheme = getSchemeById(route.params.schemeId);
   if (!scheme) return null;
 
@@ -102,7 +104,10 @@ const ApplyProcessScreen: React.FC<Props> = ({ navigation, route }) => {
         {/* Apply Now CTA */}
         <TouchableOpacity
           style={styles.applyNowBtn}
-          onPress={openWebsite}
+          onPress={() => {
+            showNow();
+            openWebsite();
+          }}
           activeOpacity={0.85}
         >
           <Text style={styles.applyNowIcon}>🌐</Text>
@@ -113,7 +118,9 @@ const ApplyProcessScreen: React.FC<Props> = ({ navigation, route }) => {
           <Text style={styles.applyNowArrow}>→</Text>
         </TouchableOpacity>
 
+        <MediumRect style={{ marginHorizontal: 16 }} />
         <DisclaimerBanner />
+        <BannerAd />
         <View style={{ height: 32 }} />
       </ScrollView>
     </View>

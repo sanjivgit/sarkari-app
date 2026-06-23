@@ -18,6 +18,7 @@ import { RootStackParamList } from '../types';
 import { getSchemeById, SECTIONS } from '../data/schemes';
 import { Colors, Shadow } from '../theme/colors';
 import { DisclaimerBanner } from '../components';
+import { BannerAd, MediumRect, useInterstitialAd } from '../services/ads';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'SchemeDetail'>;
@@ -27,6 +28,7 @@ type Props = {
 const SchemeDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const { schemeId } = route.params;
   const scheme = getSchemeById(schemeId);
+  const { showNow } = useInterstitialAd();
 
   if (!scheme) {
     return (
@@ -160,9 +162,10 @@ const SchemeDetailScreen: React.FC<Props> = ({ navigation, route }) => {
             <TouchableOpacity
               key={s.screen}
               style={[styles.sectionCard, { borderLeftColor: s.accent }]}
-              onPress={() =>
-                navigation.navigate(s.screen as any, { schemeId: scheme.id })
-              }
+              onPress={() => {
+                showNow();
+                navigation.navigate(s.screen as any, { schemeId: scheme.id });
+              }}
               activeOpacity={0.85}
             >
               <View
@@ -180,6 +183,8 @@ const SchemeDetailScreen: React.FC<Props> = ({ navigation, route }) => {
             </TouchableOpacity>
           ))}
         </View>
+
+        <MediumRect style={{ marginHorizontal: 16 }} />
 
         {/* Action Buttons */}
         <View style={styles.actionRow}>
@@ -200,6 +205,7 @@ const SchemeDetailScreen: React.FC<Props> = ({ navigation, route }) => {
         </View>
 
         <DisclaimerBanner />
+        <BannerAd />
         <View style={{ height: 32 }} />
       </ScrollView>
     </View>

@@ -9,6 +9,7 @@ import { RootStackParamList } from '../types';
 import { schemes } from '../data/schemes';
 import { Colors, Shadow } from '../theme/colors';
 import { useBookmarks } from '../hooks/useBookmarks';
+import { BannerAd } from '../services/ads';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Bookmarks'>;
@@ -71,6 +72,7 @@ const BookmarksScreen: React.FC<Props> = ({ navigation }) => {
             ))}
           </>
         )}
+        <BannerAd />
       </ScrollView>
     </View>
   );

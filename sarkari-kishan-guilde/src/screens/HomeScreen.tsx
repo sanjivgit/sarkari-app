@@ -14,6 +14,7 @@ import { RootStackParamList } from '../types';
 import { featuredScheme } from '../data/schemes';
 import { Colors, Shadow } from '../theme/colors';
 import { DisclaimerBanner } from '../components';
+import { BannerAd, MediumRect, useInterstitialAd } from '../services/ads';
 import { appName } from '../data/constant';
 
 const { width } = Dimensions.get('window');
@@ -52,6 +53,7 @@ const MENU_ITEMS = [
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const scrollY = useRef(new Animated.Value(0)).current;
   const scheme = featuredScheme;
+  const { showNow } = useInterstitialAd();
 
   const headerOpacity = scrollY.interpolate({
     inputRange: [0, 100],
@@ -123,9 +125,10 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               <View style={styles.schemeHeroBtns}>
                 <TouchableOpacity
                   style={styles.exploreBtn}
-                  onPress={() =>
-                    navigation.navigate('SchemeDetail', { schemeId: scheme.id })
-                  }
+                  onPress={() => {
+                    showNow();
+                    navigation.navigate('SchemeDetail', { schemeId: scheme.id });
+                  }}
                   activeOpacity={0.85}
                 >
                   <Text style={styles.exploreBtnText}>Explore Scheme →</Text>
@@ -162,6 +165,9 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
             ))}
           </View>
         </View>
+
+        {/* ── Inline Ad ── */}
+        <MediumRect style={{ marginHorizontal: 16, marginTop: 16 }} />
 
         {/* ── About This Scheme ── */}
         <View style={styles.section}>
@@ -230,6 +236,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         )}
 
         <DisclaimerBanner />
+        <BannerAd />
         <View style={{ height: 32 }} />
       </Animated.ScrollView>
     </View>

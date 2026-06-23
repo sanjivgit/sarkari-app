@@ -1,5 +1,5 @@
 // src/navigation/AppNavigator.tsx
-import React from 'react';
+import React, { useCallback } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { BottomTabParamList, RootStackParamList } from '../types';
@@ -25,6 +25,7 @@ import { Colors } from '../theme/colors';
 import PrivacyPolicy from '../screens/PrivacyPolicy';
 import { navigationRef } from '../utils/helper';
 import TermsAndConditions from '../screens/TermsAndConditions';
+import { useInterstitialAd } from '../services/ads';
 
 const BottomTabs: React.FC = () => {
   return (
@@ -35,7 +36,7 @@ const BottomTabs: React.FC = () => {
         tabBarActiveTintColor: Colors.primary,
         tabBarInactiveTintColor: Colors.text.light,
         tabBarLabelStyle: styles.tabLabel,
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ focused, color, size: _size }) => {
           let iconName = 'home';
           if (route.name === 'Home') iconName = 'home';
           else if (route.name === 'Bookmarks')
@@ -77,27 +78,39 @@ const BottomTabs: React.FC = () => {
   );
 };
 
-const AppNavigator = () => (
-  <NavigationContainer ref={navigationRef}>
-    <Stack.Navigator
-      initialRouteName="Splash"
-      screenOptions={{ headerShown: false, animation: 'slide_from_right' }}
-    >
-      <Stack.Screen name="Splash" component={SplashScreen} />
-      <Stack.Screen name="Main" component={BottomTabs} />
-      <Stack.Screen name="SchemeDetail" component={SchemeDetailScreen} />
-      <Stack.Screen name="Eligibility" component={EligibilityScreen} />
-      <Stack.Screen name="Benefits" component={BenefitsScreen} />
-      <Stack.Screen name="Documents" component={DocumentsScreen} />
-      <Stack.Screen name="ApplyProcess" component={ApplyProcessScreen} />
-      <Stack.Screen name="FAQ" component={FAQScreen} />
-      <Stack.Screen name="Bookmarks" component={BookmarksScreen} />
-      <Stack.Screen name="Settings" component={SettingsScreen} />
-      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
-      <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} />
-    </Stack.Navigator> 
-  </NavigationContainer>
-);
+const AppNavigator = () => {
+  const { showInterstitial } = useInterstitialAd();
+  const [prevState, setPrevState] = React.useState<any>(null);
+
+  const onStateChange = useCallback((state: any) => {
+    if (prevState && state) {
+      showInterstitial();
+    }
+    setPrevState(state);
+  }, [prevState, showInterstitial]);
+
+  return (
+    <NavigationContainer ref={navigationRef} onStateChange={onStateChange}>
+      <Stack.Navigator
+        initialRouteName="Splash"
+        screenOptions={{ headerShown: false, animation: 'slide_from_right' }}
+      >
+        <Stack.Screen name="Splash" component={SplashScreen} />
+        <Stack.Screen name="Main" component={BottomTabs} />
+        <Stack.Screen name="SchemeDetail" component={SchemeDetailScreen} />
+        <Stack.Screen name="Eligibility" component={EligibilityScreen} />
+        <Stack.Screen name="Benefits" component={BenefitsScreen} />
+        <Stack.Screen name="Documents" component={DocumentsScreen} />
+        <Stack.Screen name="ApplyProcess" component={ApplyProcessScreen} />
+        <Stack.Screen name="FAQ" component={FAQScreen} />
+        <Stack.Screen name="Bookmarks" component={BookmarksScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
+        <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} />
+      </Stack.Navigator> 
+    </NavigationContainer>
+  );
+};
 
 const styles = StyleSheet.create({
   tabBar: {
