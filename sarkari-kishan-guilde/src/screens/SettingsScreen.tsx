@@ -14,83 +14,83 @@ import { RootStackParamList } from '../types';
 import { Colors, Shadow } from '../theme/colors';
 import { SETTINGS_SECTIONS } from '../data/schemes';
 import { appName } from '../data/constant';
-import { BannerAd, MediumRect, useRewardedAd } from '../services/ads';
+import { BannerAd, MediumRect } from '../services/ads';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Settings'>;
 };
 
 const SettingsScreen: React.FC<Props> = ({ navigation }) => {
-  const { showRewardedAd, isLoaded } = useRewardedAd();
+  // const { showRewardedAd, isLoaded } = useRewardedAd();
   return (
-  <View style={styles.container}>
-    <View style={styles.header}>
-      <Pressable
-        hitSlop={50}
-        onPress={() => navigation.goBack()}
-        style={styles.backBtn}
-      >
-        <Text style={styles.backArrow}>←</Text>
-      </Pressable>
-      <Text style={styles.headerTitle}>Settings & About</Text>
-      <View style={{ width: 36 }} />
-    </View>
-
-    <ScrollView showsVerticalScrollIndicator={false}>
-      {/* App Logo */}
-      <View style={styles.appLogoSection}>
-        <View style={styles.appLogo}>
-          {/* <Text style={styles.appLogoEmoji}>🌾</Text> */}
-          <Image
-            style={styles.appLogoEmoji}
-            source={require('../assets/logo.png')}
-          />
-        </View>
-        <Text style={styles.appName}>{appName}</Text>
-        <Text style={styles.appTagline}>Government Scheme Information</Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Pressable
+          hitSlop={50}
+          onPress={() => navigation.goBack()}
+          style={styles.backBtn}
+        >
+          <Text style={styles.backArrow}>←</Text>
+        </Pressable>
+        <Text style={styles.headerTitle}>Settings & About</Text>
+        <View style={{ width: 36 }} />
       </View>
 
-      {/* Disclaimer Banner */}
-      <View style={styles.disclaimerCard}>
-        <Text style={styles.disclaimerIcon}>⚠️</Text>
-        <Text style={styles.disclaimerText}>
-          This app is not affiliated with any government entity. Information is
-          sourced from publicly available government websites for informational
-          purposes only.
-        </Text>
-      </View>
-
-      {SETTINGS_SECTIONS.map(section => (
-        <View key={section.title} style={styles.section}>
-          <Text style={styles.sectionTitle}>{section.title}</Text>
-          <View style={styles.sectionCard}>
-            {section.items.map((item, i) => (
-              <React.Fragment key={item.label}>
-                <TouchableOpacity
-                  style={styles.settingRow}
-                  onPress={item.action ?? undefined}
-                  activeOpacity={item.action ? 0.7 : 1}
-                >
-                  <Text style={styles.settingIcon}>{item.icon}</Text>
-                  <Text style={styles.settingLabel}>{item.label}</Text>
-                  {item.value ? (
-                    <Text style={styles.settingValue}>{item.value}</Text>
-                  ) : (
-                    item.action && <Text style={styles.settingArrow}>›</Text>
-                  )}
-                </TouchableOpacity>
-                {i < section.items.length - 1 && (
-                  <View style={styles.divider} />
-                )}
-              </React.Fragment>
-            ))}
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* App Logo */}
+        <View style={styles.appLogoSection}>
+          <View style={styles.appLogo}>
+            {/* <Text style={styles.appLogoEmoji}>🌾</Text> */}
+            <Image
+              style={styles.appLogoEmoji}
+              source={require('../assets/logo.png')}
+            />
           </View>
+          <Text style={styles.appName}>{appName}</Text>
+          <Text style={styles.appTagline}>Government Scheme Information</Text>
         </View>
-      ))}
 
-      <MediumRect style={{ marginHorizontal: 16 }} />
-      <BannerAd />
-      <TouchableOpacity
+        {/* Disclaimer Banner */}
+        <View style={styles.disclaimerCard}>
+          <Text style={styles.disclaimerIcon}>⚠️</Text>
+          <Text style={styles.disclaimerText}>
+            This app is not affiliated with any government entity. Information
+            is sourced from publicly available government websites for
+            informational purposes only.
+          </Text>
+        </View>
+
+        {SETTINGS_SECTIONS.map(section => (
+          <View key={section.title} style={styles.section}>
+            <Text style={styles.sectionTitle}>{section.title}</Text>
+            <View style={styles.sectionCard}>
+              {section.items.map((item, i) => (
+                <React.Fragment key={item.label}>
+                  <TouchableOpacity
+                    style={styles.settingRow}
+                    onPress={item.action ?? undefined}
+                    activeOpacity={item.action ? 0.7 : 1}
+                  >
+                    <Text style={styles.settingIcon}>{item.icon}</Text>
+                    <Text style={styles.settingLabel}>{item.label}</Text>
+                    {item.value ? (
+                      <Text style={styles.settingValue}>{item.value}</Text>
+                    ) : (
+                      item.action && <Text style={styles.settingArrow}>›</Text>
+                    )}
+                  </TouchableOpacity>
+                  {i < section.items.length - 1 && (
+                    <View style={styles.divider} />
+                  )}
+                </React.Fragment>
+              ))}
+            </View>
+          </View>
+        ))}
+
+        <MediumRect style={{ marginHorizontal: 16 }} />
+        <BannerAd />
+        {/* <TouchableOpacity
         style={styles.supportBtn}
         onPress={() => showRewardedAd()}
         activeOpacity={0.85}
@@ -103,13 +103,13 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           </Text>
         </View>
         <Text style={styles.supportArrow}>›</Text>
-      </TouchableOpacity>
-      <Text style={styles.footerText}>
-        Made with ❤️ for Indian Farmers{'\n'} Free App
-      </Text>
-      <View style={{ height: 32 }} />
-    </ScrollView>
-  </View>
+      </TouchableOpacity> */}
+        <Text style={styles.footerText}>
+          Made with ❤️ for Indian Farmers{'\n'} Free App
+        </Text>
+        <View style={{ height: 32 }} />
+      </ScrollView>
+    </View>
   );
 };
 
